@@ -1,8 +1,7 @@
 import './Login.css';
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
 
 function Login() {
     const navigate = useNavigate();
@@ -14,12 +13,8 @@ function Login() {
     const handleFormSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
-        const loginData = {
-            email: username,
-            password: password
-        };
         try {
-            const response = await axios.post("https://serenitysteps.onrender.com/login", {username, password} );
+            const response = await axios.post("https://serenitysteps.onrender.com/login", { username, password });
             localStorage.setItem('token', response.data.token);
             navigate('/home');
         } catch (error) {
@@ -30,51 +25,53 @@ function Login() {
     };
 
     return (
-        <>
-        
-        <div className="baap">
-            
-            <div className='login-side'>
-                <div >
-                    <h1 id='web-name'>Serenity Steps</h1>
-                </div>
+        <div className="auth-root">
+            <div className="auth-blob auth-blob-sage"></div>
+            <div className="auth-blob auth-blob-blue"></div>
 
-                <h2>Serenity Steps helps user to reach their wellness goals and improve their general health by taking a coordinated approach to well-being.</h2>
-            </div>
-            <img src="./Bg_capstone.jpeg" alt="" id='bg-img'/>
-            <div className="lform-container">
-            <form className="loginform" onSubmit={handleFormSubmit}>
-                <input 
-                    type="text"
-                    placeholder='Username'
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    required
-                />
-                <br />
-                <input
-                    type="password"
-                    placeholder='Password'
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    minLength={6}
-                />
-                <br />
-                <button type="submit" className="login-btn" disabled={isLoading}>
-                    {isLoading ? 'Logging in...' : 'Login'}
-                </button>
-                <div id='fp'><a href="" id='fp'>Forgotten Password?</a></div>
-                <div id='line'></div>
-                <div id='signin10'><Link to="/signup" id='signin101'> Create new account</Link></div>
-                
-            </form>
-            {loginError && <p className="error-message">{loginError}</p>}
+            <div className="auth-card">
+                <h1 className="auth-title">Welcome Back</h1>
+                <p className="auth-subtitle">Enter your details to find your serenity.</p>
+
+                <form className="auth-form" onSubmit={handleFormSubmit}>
+                    <div className="auth-input-group">
+                        <label className="auth-label">Username</label>
+                        <input
+                            type="text"
+                            className="auth-input"
+                            placeholder="e.g. serenity_seeker"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    <div className="auth-input-group">
+                        <label className="auth-label">Password</label>
+                        <input
+                            type="password"
+                            className="auth-input"
+                            placeholder="••••••••"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    <a href="#" className="auth-forgot">Forgot password?</a>
+
+                    <button type="submit" className="auth-btn-submit" disabled={isLoading}>
+                        {isLoading ? 'Signing In...' : 'Sign In'}
+                    </button>
+                </form>
+
+                {loginError && <p style={{ color: 'red', textAlign: 'center', fontSize: '0.9rem' }}>{loginError}</p>}
+
+                <div className="auth-footer">
+                    New here? <Link to="/signup" className="auth-link">Create an account</Link>
+                </div>
             </div>
         </div>
-           
-        </>
-        
     );
 }
 

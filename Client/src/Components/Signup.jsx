@@ -17,15 +17,13 @@ function Signup() {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-
-    // Detect if the input is an email or a phone number
     const isEmail = /\S+@\S+\.\S+/.test(contactOrEmail);
-    const userdata = { 
-      firstName, 
-      lastName, 
-      username, 
-      password, 
-      ...(isEmail ? { email: contactOrEmail } : { contactNumber: contactOrEmail }) 
+    const userdata = {
+      firstName,
+      lastName,
+      username,
+      password,
+      ...(isEmail ? { email: contactOrEmail } : { contactNumber: contactOrEmail })
     };
 
     try {
@@ -38,53 +36,63 @@ function Signup() {
   };
 
   const onSuccess = (res) => {
-    alert("Google Signup Successful!");
     navigate("/home");
   };
 
   return (
-    <>
-      <nav>
-        <div className='Snavbar'>
-          <Link to="/" className='Stitle'>Serenity Steps</Link>
-        </div>
-      </nav>
-      <img src="./Bg_capstone.jpeg" alt="" id='bg-img'/>
-      
-      <div className="Scontainer">
-        <div className='Signup-side'>
-          <h1 id='web-name'>Serenity Steps</h1>
-          <h2>Serenity Steps helps users reach their wellness goals and improve overall health through a coordinated approach to well-being.</h2>
-        </div>
+    <div className="auth-root">
+      <div className="auth-blob auth-blob-sage"></div>
+      <div className="auth-blob auth-blob-blue"></div>
 
-        <div className="sform-container">
-          <form className="signupform" onSubmit={handleFormSubmit}>
-            <label>First Name:</label>
-            <input type="text" className="Boxx" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
+      <div className="auth-card">
+        <h1 className="auth-title">Create Account</h1>
+        <p className="auth-subtitle">Join Serenity Steps today.</p>
 
-            <label>Last Name:</label>
-            <input type="text" className="Boxx" value={lastName} onChange={(e) => setLastName(e.target.value)} required />
-
-            <label>Mobile Number or Email Address:</label>
-            <input type="text" className="Boxx" value={contactOrEmail} onChange={(e) => setContactOrEmail(e.target.value)} required />
-
-            <label>Create Username:</label>
-            <input type="text" className="Boxx" value={username} onChange={(e) => setUsername(e.target.value)} required />
-
-            <label>Create Password:</label>
-            <input type="password" className="Boxx" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} />
-
-            <button type="submit" className="signup-btn">SIGNUP</button>
-
-            <div className="google-auth">
-              <GoogleOAuthProvider clientId={clientID}>
-                <GoogleLogin onSuccess={onSuccess} text="signup_with"/>
-              </GoogleOAuthProvider>
+        <form className="auth-form" onSubmit={handleFormSubmit}>
+          <div className="auth-row">
+            <div className="auth-input-group">
+              <label className="auth-label">First Name</label>
+              <input type="text" className="auth-input" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
             </div>
-          </form>
+            <div className="auth-input-group">
+              <label className="auth-label">Last Name</label>
+              <input type="text" className="auth-input" value={lastName} onChange={(e) => setLastName(e.target.value)} required />
+            </div>
+          </div>
+
+          <div className="auth-input-group">
+            <label className="auth-label">Email or Mobile</label>
+            <input type="text" className="auth-input" value={contactOrEmail} onChange={(e) => setContactOrEmail(e.target.value)} required />
+          </div>
+
+          <div className="auth-input-group">
+            <label className="auth-label">Username</label>
+            <input type="text" className="auth-input" value={username} onChange={(e) => setUsername(e.target.value)} required />
+          </div>
+
+          <div className="auth-input-group">
+            <label className="auth-label">Password</label>
+            <input type="password" className="auth-input" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} />
+          </div>
+
+          <button type="submit" className="auth-btn-submit">Sign Up</button>
+
+          <div className="auth-divider">or sign up with</div>
+
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <GoogleOAuthProvider clientId={clientID}>
+              <GoogleLogin onSuccess={onSuccess} text="signup_with" shape="circle" width="250" />
+            </GoogleOAuthProvider>
+          </div>
+        </form>
+
+        {signupError && <p style={{ color: 'red', textAlign: 'center' }}>{signupError}</p>}
+
+        <div className="auth-footer">
+          Already have an account? <Link to="/login" className="auth-link">Log in</Link>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

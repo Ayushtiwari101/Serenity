@@ -1,307 +1,212 @@
-/* Reset and Base Styles */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Montserrat", sans-serif;
-}
-.session-head {
-  color: white;
-  font-size: 30px;
-  margin-right: 38vw;
+/* Meditation (Structured & Fixed) */
 
-}
-
-/* Main Container */
-.app {
+.meditation-root-container {
   height: 100vh;
-  width: 100vw;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  align-items: center;
+  width: 100%;
   position: relative;
-  color: white;
   overflow: hidden;
-  background: rgba(0, 0, 0, 0.2);
-}
-
-/* Navigation Bar */
-.meditation-nav {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  padding: 1.5rem 2rem;
-  background: rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(10px);
-  z-index: 100;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-}
-
-.back-button {
   color: white;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 1.1rem;
-  padding: 0.8rem 1.5rem;
-  border-radius: 50px;
-  background: rgba(255, 255, 255, 0.1);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.back-button:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 /* Video Background */
-.vid-container {
-  position: fixed;
+.meditation-vid-container {
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: -1;
+  z-index: 0;
 }
 
-.vid-container video {
+.meditation-bg-video {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-/* Main Content Layout */
-.content-wrapper {
-  margin-top: 100px;
-  width: 100%;
-  max-width: 1200px;
-  padding: 0 2rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3rem;
-}
-
-/* Time Selection */
-.time-select {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 1.5rem;
-  max-width: 600px;
-  margin-top: 2rem;
-  width: 10vw;
-}
-
-.time-select button {
-  flex: 1;
-  padding: 1rem 2rem;
-  font-size: 1.1rem;
-  color: white;
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 15px;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  backdrop-filter: blur(5px);
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-}
-
-.time-select button:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: translateY(-3px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-  border-color: rgba(255, 255, 255, 0.5);
-}
-
-/* Player Container */
-.player-container {
-  position: relative;
-  width: 400px;
-  height: 400px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 2rem 0;
-}
-
-.play {
-  position: absolute;
-  width: 60px;
-  height: 60px;
-  top: 7vh;
-  cursor: pointer;
-  z-index: 2;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.3));
-}
-
-.play:hover {
-  transform: scale(1.1);
-  filter: drop-shadow(0 0 15px rgba(0, 0, 0, 0.4));
-}
-
-.track-outline,
-.moving-outline {
+.meditation-video-overlay {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  transition: all 0.3s ease;
+  background: rgba(0, 0, 0, 0.4);
+  /* Strong overlay for text readability */
+  z-index: 1;
 }
 
-.track-outline circle {
-  opacity: 0.3;
-}
-
-.moving-outline circle {
-  transition: stroke-dashoffset 0.3s ease;
-}
-
-.time-display {
-  position: absolute;
-  color: white;
-  top: 40vh;
-  font-size: 4rem;
-  font-weight: bold;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-}
-
-/* Sound Picker */
-.sound-picker {
+/* Navbar */
+.meditation-navbar {
+  position: relative;
+  z-index: 10;
+  padding: 1.5rem 2rem;
   display: flex;
-  justify-content: center;
-  flex-direction: column;
-  gap: 2rem;
-  margin-top: 3rem;
-}
-
-.sound-picker button {
-  width: 100px;
-  height: 100px;
-  border: none;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(5px);
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
-.sound-picker button:hover {
-  transform: translateY(-5px) scale(1.05);
-  background: rgba(255, 255, 255, 0.2);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+.meditation-back-btn {
+  color: white;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+  font-weight: 500;
 }
 
-.sound-picker button img {
-  width: 60%;
-  height: 60%;
-  transition: all 0.3s ease;
+.meditation-back-btn:hover {
+  opacity: 1;
 }
 
-.sound-picker button:hover img {
+.meditation-title {
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* Main Controls - Centered */
+.meditation-controls-wrapper {
+  position: relative;
+  z-index: 10;
+  height: 80%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* Vertical Center */
+  align-items: center;
+  gap: 3rem;
+}
+
+/* Time Picker */
+.meditation-time-picker {
+  display: flex;
+  gap: 1rem;
+}
+
+.meditation-time-btn {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 8px 16px;
+  border-radius: 100px;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  backdrop-filter: blur(4px);
+}
+
+.meditation-time-btn:hover {
+  background: white;
+  color: black;
+}
+
+/* Player Circle */
+.meditation-player-container {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.meditation-svg-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.meditation-track-outline circle {
+  stroke: rgba(255, 255, 255, 0.1);
+}
+
+.meditation-moving-outline circle {
+  stroke: rgba(255, 255, 255, 0.9);
+  /* Bright white progress */
+  transition: all 0.1s linear;
+}
+
+/* Center Actions inside Circle */
+.meditation-center-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  z-index: 20;
+}
+
+.meditation-timer-text {
+  font-size: 3.5rem;
+  font-weight: 300;
+  margin: 0;
+  font-family: var(--s-font-heading);
+}
+
+.meditation-play-toggle {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.meditation-play-toggle:hover {
   transform: scale(1.1);
 }
 
-/* Replay Button */
-.replay {
+.meditation-play-icon {
+  width: 24px;
+  height: 24px;
+  filter: brightness(0);
+  /* Make black */
+}
+
+.meditation-replay-btn {
   position: absolute;
-  width: 60px;
-  height: 60px;
+  bottom: -60px;
+  background: none;
+  border: none;
+  opacity: 0.6;
+  transition: opacity 0.2s;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.2));
 }
 
-.replay:hover {
-  transform: rotate(30deg) scale(1.1);
-  filter: drop-shadow(0 0 12px rgba(0, 0, 0, 0.3));
+.meditation-replay-btn:hover {
+  opacity: 1;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .meditation-nav {
-    padding: 1rem;
-  }
-
-  .content-wrapper {
-    margin-top: 80px;
-    padding: 0 1rem;
-  }
-
-  .time-select {
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .time-select button {
-    width: 100%;
-    padding: 0.8rem;
-  }
-
-  .player-container {
-    width: 300px;
-    height: 300px;
-  }
-
-  .play {
-    width: 60px;
-    height: 60px;
-  }
-
-  .time-display {
-    font-size: 3rem;
-    bottom: -50px;
-  }
-
-  .sound-picker {
-    gap: 1rem;
-  }
-
-  .sound-picker button {
-    width: 80px;
-    height: 80px;
-  }
-
-  .replay {
-    width: 40px;
-    height: 40px;
-    bottom: 1rem;
-    right: 1rem;
-  }
+/* Sound Picker */
+.meditation-sound-picker {
+  display: flex;
+  gap: 2rem;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 1rem 2rem;
+  border-radius: 100px;
+  backdrop-filter: blur(10px);
 }
 
-/* Animations */
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
+.meditation-sound-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  color: white;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+  font-size: 0.9rem;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+.meditation-sound-btn:hover {
+  opacity: 1;
 }
 
-.time-select button,
-.sound-picker button,
-.player-container {
-  animation: fadeIn 0.6s ease-out forwards;
-}
-
-.play {
-  animation: pulse 2s infinite;
+.meditation-sound-btn img {
+  width: 20px;
+  height: 20px;
+  filter: invert(1);
 }

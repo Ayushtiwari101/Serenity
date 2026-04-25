@@ -1,118 +1,129 @@
-@import url('https://fonts.googleapis.com/css2?family=Bokor&family=Roboto&display=swap');
-*{
-    margin: 0;
-    padding: 0;
-}
-.baap{
+/* Shared Auth Styles (Structured) */
+
+.auth-root {
+  min-height: 100vh;
   display: flex;
-  align-items: center;
   justify-content: center;
-  margin-top: 10vh;
-  width: 100vw;
-  gap: 3vw;
-  
-}
-.login-side {
-    background-color: rgba(255, 255, 255, 0.8);
-    border-radius: 8px;
-    padding: 20px;
-    width: 45vw;
-    min-height: 350px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-}
-#web-name{
-  font-family: "Bokor", system-ui;
-  font-size: 60px;
-  font-weight: 400;
-  font-style: normal;
-  
-}
-.lform-container {
-  background: #ffffff;
-  padding: 40px;
-  border-radius: 8px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
-  width: 350px;
+  align-items: center;
+  background-color: var(--s-gray-50);
+  padding: 1rem;
 }
 
-/* 🔹 Form Inputs */
-.loginform input {
+/* No blobs. Just a reliable card. */
+.auth-card {
   width: 100%;
-  padding: 12px;
-  margin: 10px 0;
-  border: 1px solid #ccd0d5;
-  border-radius: 5px;
-  font-size: 16px;
-  transition: 0.3s;
+  max-width: 420px;
+  background: white;
+  padding: 2.5rem;
+  border-radius: var(--s-radius-md);
+  box-shadow: var(--s-shadow-card);
+  border: 1px solid var(--s-gray-200);
 }
 
-.loginform input:focus {
-  border-color: #1877f2;
+.auth-title {
+  font-size: 1.8rem;
+  text-align: center;
+  margin-bottom: 0.5rem;
+  color: var(--s-gray-900);
+}
+
+.auth-subtitle {
+  text-align: center;
+  color: var(--s-gray-400);
+  font-size: 0.95rem;
+  margin-bottom: 2rem;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.auth-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.auth-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--s-gray-700);
+}
+
+.auth-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--s-gray-200);
+  border-radius: var(--s-radius-sm);
+  font-family: var(--s-font-body);
+  font-size: 1rem;
+  color: var(--s-gray-900);
+  background: white;
+  transition: border 0.2s;
+}
+
+.auth-input:focus {
   outline: none;
-  box-shadow: 0 0 5px rgba(24, 119, 242, 0.5);
+  border-color: var(--s-primary);
+  box-shadow: 0 0 0 2px var(--s-primary-light);
 }
 
-/* 🔹 Login Button */
-.login-btn {
+.auth-btn-submit {
   width: 100%;
   padding: 12px;
-  background-color: #1877f2;
+  margin-top: 1rem;
+  background-color: var(--s-primary);
   color: white;
-  font-weight: bold;
-  border: none;
-  border-radius: 5px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  border-radius: var(--s-radius-sm);
+  font-weight: 600;
+  font-size: 1rem;
+  transition: background 0.2s;
 }
 
-.login-btn:hover {
-  background-color: #155dbf;
-  transform: scale(1.02);
+.auth-btn-submit:hover {
+  background-color: var(--s-primary-dark);
 }
 
-/* 🔹 Forgot Password Link */
-#fp {
-  display: block;
+.auth-forgot {
+  text-align: right;
+  font-size: 0.85rem;
+  color: var(--s-primary);
+}
+
+.auth-divider {
   text-align: center;
-  color: #1877f2;
-  font-size: 14px;
-  margin-top: 10px;
-  text-decoration: none;
+  border-top: 1px solid var(--s-gray-200);
+  margin: 1.5rem 0;
+  position: relative;
 }
 
-#fp:hover {
-  text-decoration: underline;
+.auth-divider span {
+  /* If wrapped in span, background covers line. If plain text, handle differently.
+     Assuming text content directly in div based on JSX. */
+  background: white;
+  padding: 0 10px;
+  position: relative;
+  top: -10px;
+  font-size: 0.85rem;
+  color: var(--s-gray-400);
 }
 
-/* 🔹 Create New Account Button */
-#signin101 {
-  display: block;
+.auth-footer {
   text-align: center;
-  padding: 12px;
-  background-color: #42b72a;
-  color: white;
-  font-weight: bold;
-  border-radius: 5px;
-  font-size: 16px;
-  text-decoration: none;
-  margin-top: 20px;
-  transition: all 0.3s ease;
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  color: var(--s-gray-700);
 }
 
-#signin101:hover {
-  background-color: #36a420;
-  transform: scale(1.02);
+.auth-link {
+  color: var(--s-primary);
+  font-weight: 600;
 }
 
-/* 🔹 Divider Line */
-#line {
-  border-bottom: 1px solid #ccd0d5;
-  margin: 20px 0;
+/* Signup specific */
+.auth-row {
+  display: flex;
+  gap: 1rem;
 }
-
-  
