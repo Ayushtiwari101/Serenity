@@ -1,108 +1,135 @@
-/* Games Page Styles */
-  .game-navbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      padding: 1.5rem 2rem;
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(10px);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      z-index: 100;
-    }
-  
-  .Gtitle {
-    color: white;
-    text-decoration: none;
-    font-size: 1.8rem;
-    font-weight: bold;
-  }
-  
-  .back-link {
-    color: white;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 1.1rem;
-    padding: 0.5rem 1rem;
-    border-radius: 25px;
-    background: rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease;
-  }
-  
-  .back-link:hover {
-    background: rgba(255, 255, 255, 0.2);
-  }
-  
-  #home-bg {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: -1;
-  }
-  
-  .sectionghead {
-    text-align: center;
-    color: white;
-    font-size: 3rem;
-    margin-right: 38vw;
+/* Games - Creative Flow */
 
+.games-root-container {
+  min-height: 100vh;
+  padding: 2rem 0;
+  background: var(--bg-play);
+}
+
+.games-navbar {
+  max-width: 1200px;
+  margin: 0 auto 3rem auto;
+  padding: 0 1.5rem;
+  text-align: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.games-back-link {
+  /* Absolute positioning for back link on desktop to keep title center */
+  position: absolute;
+  left: 2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--s-gray-700);
+  font-weight: 500;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.games-back-link:hover {
+  opacity: 1;
+}
+
+.games-title {
+  font-size: 2.5rem;
+  color: var(--s-gray-900);
+  margin-bottom: 0.5rem;
+  letter-spacing: -1px;
+}
+
+.games-subtitle {
+  font-size: 1.1rem;
+  color: var(--s-gray-600);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.games-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.games-card {
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px -5px rgba(50, 50, 93, 0.1);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  display: flex;
+  flex-direction: column;
+}
+
+.games-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px -10px rgba(50, 50, 93, 0.2);
+}
+
+.games-card-image-wrapper {
+  height: 200px;
+  background: var(--s-gray-100);
+  position: relative;
+  overflow: hidden;
+}
+
+.games-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s;
+}
+
+.games-card:hover .games-card-img {
+  transform: scale(1.1);
+}
+
+.games-card-content {
+  padding: 1.5rem;
+  text-align: center;
+  flex: 1;
+  /* Push button to bottom if text varies */
+  display: flex;
+  flex-direction: column;
+}
+
+.games-card-title {
+  font-size: 1.25rem;
+  color: var(--s-gray-900);
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+}
+
+.games-play-btn {
+  margin-top: auto;
+  /* Sit at bottom */
+  display: block;
+  padding: 12px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 12px;
+  font-weight: 600;
+  text-align: center;
+  transition: opacity 0.2s;
+  box-shadow: 0 4px 15px rgba(118, 75, 162, 0.3);
+}
+
+.games-play-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .games-back-link {
+    position: static;
+    transform: none;
+    align-self: flex-start;
+    margin-bottom: 1rem;
   }
-  
-  .game-section {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    padding: 2rem;
-    max-width: 1400px;
-    margin: 0 auto;
-  }
-  
-  .gameblock {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    overflow: hidden;
-    transition: transform 0.3s ease;
-  }
-  
-  .gameblock:hover {
-    transform: translateY(-10px);
-  }
-  
-  .gamebox {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 2rem;
-  }
-  
-  .gamebox-logo {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 10px;
-    margin-bottom: 1.5rem;
-  }
-  
-  .game-btn {
-    display: inline-block;
-    padding: 0.8rem 2rem;
-    background: #0e0e0e;
-    color: white;
-    text-decoration: none;
-    border-radius: 25px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-  }
-  
-  .game-btn:hover {
-    background: #357abd;
-    transform: scale(1.05);
-  }
+}

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Typed from 'typed.js';
 import './Landing.css';
@@ -8,49 +8,55 @@ const Landing = () => {
 
   useEffect(() => {
     if (!typedRef.current) return;
-    
+
     const options = {
-      strings: ["Hello and Welcome to <br /><span class='heading'>Serenity Steps</span>"],
-      typeSpeed: 70,
+      strings: ["Peace", "Balance", "Serenity"],
+      typeSpeed: 90,
+      backSpeed: 60,
       loop: true,
       showCursor: false,
     };
-  
+
     const typed = new Typed(typedRef.current, options);
-  
+
     return () => {
       typed.destroy();
     };
   }, []);
 
   return (
-    <>
-      <nav>
-        <div className='navbarL'>
-          <h1 className='titleL'>Serenity Steps</h1>
-          <Link to="/login">
-            <button className='loginbtnL'>Login</button>
-          </Link>
+    <div className="landing-root-container">
+      {/* Clean Navbar */}
+      <nav className="landing-navbar">
+        <div className="landing-logo">Serenity</div>
+        <div className="landing-nav-links">
+          <Link to="/login" className="landing-nav-link">Login</Link>
+          <Link to="/signup" className="landing-nav-btn">Get Started</Link>
         </div>
       </nav>
-      
-      <img 
-        src="./Bg_capstone.jpeg" 
-        alt="Serene background" 
-        id='bg-img'
-      />
-      
-      <div id="typed-container">
-        <span ref={typedRef}></span>
-        <br />
-        <div className='message1'>
-          <h3>Begin your journey to mindfulness and peace</h3>
+
+      {/* Hero Section */}
+      <main className="landing-hero-section">
+        <div className="landing-hero-content">
+          <h1 className="landing-hero-title">
+            Find your <span ref={typedRef} className="landing-highlight-text"></span>
+          </h1>
+          <p className="landing-hero-subtext">
+            Your personalized sanctuary for meditation, balanced nutrition,
+            and mindful movement. Rediscover your inner calm today.
+          </p>
+
+          <div className="landing-cta-group">
+            <Link to="/signup">
+              <button className="landing-btn-primary">Begin Journey</button>
+            </Link>
+            <Link to="/login">
+              <button className="landing-btn-secondary">Sign In</button>
+            </Link>
+          </div>
         </div>
-      </div>
-        <Link to="/signup">
-          <button className='signupbtnL'>Signup</button>
-        </Link>
-    </>
+      </main>
+    </div>
   );
 };
 

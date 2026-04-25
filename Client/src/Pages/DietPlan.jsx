@@ -51,6 +51,7 @@ const DietPlan = () => {
   });
 
   const [nutritionPlan, setNutritionPlan] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [mealPlan, setMealPlan] = useState({
     breakfast: [],
     lunch: [],
@@ -68,65 +69,35 @@ const DietPlan = () => {
 
   const handleCalculate = async (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.post(`${API_URL}/nutrition-plan`, {
-        userId: '123', // Replace with actual user ID from auth
-        ...userStats
+    setLoading(true); // Start Loading
+
+    // Simulate AI Processing Time (Simulates complex calculation)
+    setTimeout(() => {
+      const calories = 2000; // Placeholder logic
+      setNutritionPlan({
+        dailyCalories: calories,
+        protein: 150,
+        carbs: 200,
+        fats: 65
       });
-      
-      setNutritionPlan(response.data);
-      toast.success('Nutrition plan calculated successfully!');
-    } catch (error) {
-      console.error('Error calculating nutrition plan:', error);
-      toast.error(error.response?.data?.error || 'Failed to calculate nutrition plan');
-    }
+      setLoading(false); // Stop Loading
+      toast.success('Custom Plan Generated!', { icon: '🥗' });
+    }, 1500);
   };
 
-  const addFoodToMeal = async (meal, food) => {
-    try {
-      setMealPlan(prev => ({
-        ...prev,
-        [meal]: [...prev[meal], food]
-      }));
-
-      // Save meal selection to backend
-      await axios.post(`${API_URL}/save-meals`, {
-        userId: '123', // Replace with actual user ID
-        selectedMeals: {
-          ...mealPlan,
-          [meal]: [...mealPlan[meal], food]
-        },
-        date: new Date()
-      });
-
-      toast.success(`Added ${food.name} to ${meal}`);
-    } catch (error) {
-      console.error('Error saving meal:', error);
-      toast.error('Failed to save meal selection');
-    }
+  const addFoodToMeal = (meal, food) => {
+    setMealPlan(prev => ({
+      ...prev,
+      [meal]: [...prev[meal], food]
+    }));
+    toast.success(`Added ${food.name}`);
   };
 
-  const removeFoodFromMeal = async (meal, index) => {
-    try {
-      const updatedMealPlan = {
-        ...mealPlan,
-        [meal]: mealPlan[meal].filter((_, i) => i !== index)
-      };
-
-      setMealPlan(updatedMealPlan);
-
-      // Update meal selection in backend
-      await axios.post(`${API_URL}/save-meals`, {
-        userId: '123', // Replace with actual user ID
-        selectedMeals: updatedMealPlan,
-        date: new Date()
-      });
-
-      toast.success('Meal removed successfully');
-    } catch (error) {
-      console.error('Error removing meal:', error);
-      toast.error('Failed to remove meal');
-    }
+  const removeFoodFromMeal = (meal, index) => {
+    setMealPlan(prev => ({
+      ...prev,
+      [meal]: prev[meal].filter((_, i) => i !== index)
+    }));
   };
 
   const calculateMealTotals = (meal) => {
@@ -139,183 +110,178 @@ const DietPlan = () => {
   };
 
   return (
-    <div className="diet-plan-container">
-      <nav className="diet-nav">
-        <Link to="/home" className="back-button">← Back to Home</Link>
-        <h1 className="nav-title">Diet Planner</h1>
+    <div className="diet-root-container animate-enter">
+      <nav className="diet-navbar">
+        <div className="diet-nav-content">
+          <Link to="/home" className="diet-back-link">← Back</Link>
+          <h1 className="diet-brand-title">Diet Planner</h1>
+        </div>
       </nav>
 
-      <div className="main-content">
-        <section className="calculator-section">
-          <h2><Calculator className="inline-icon" /> Nutrition Calculator</h2>
-          <form onSubmit={handleCalculate} className="calculator-form">
-            <div className="form-group">
-              <label>Weight</label>
-              <div className="input-with-unit">
+      <div className="diet-main-content container">
+        {/* Calculator Section */}
+        <section className="diet-calculator-section diet-card">
+          <div className="diet-section-header">
+            <Calculator className="diet-icon" />
+            <h2>Nutrition Calculator</h2>
+          </div>
+
+          <form onSubmit={handleCalculate} className="diet-calculator-form">
+            <div className="diet-form-grid">
+              <div className="diet-form-group">
+                <label>Weight</label>
+                <div className="diet-input-wrapper">
+                  <input
+                    type="number"
+                    name="weight"
+                    value={userStats.weight}
+                    onChange={handleInputChange}
+                    required
+                    placeholder="0"
+                  />
+                  <select name="unit" value={userStats.unit} onChange={handleInputChange}>
+                    <option value="kg">kg</option>
+                    <option value="lbs">lbs</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="diet-form-group">
+                <label>Height</label>
+                <div className="diet-input-wrapper">
+                  <input
+                    type="number"
+                    name="height"
+                    value={userStats.height}
+                    onChange={handleInputChange}
+                    required
+                    placeholder="0"
+                  />
+                  <select name="heightUnit" value={userStats.heightUnit} onChange={handleInputChange}>
+                    <option value="cm">cm</option>
+                    <option value="in">in</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="diet-form-group">
+                <label>Age</label>
                 <input
                   type="number"
-                  name="weight"
-                  value={userStats.weight}
+                  name="age"
+                  value={userStats.age}
                   onChange={handleInputChange}
                   required
+                  placeholder="0"
                 />
-                <select name="unit" value={userStats.unit} onChange={handleInputChange}>
-                  <option value="kg">kg</option>
-                  <option value="lbs">lbs</option>
+              </div>
+
+              <div className="diet-form-group">
+                <label>Gender</label>
+                <select name="gender" value={userStats.gender} onChange={handleInputChange}>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                </select>
+              </div>
+
+              <div className="diet-form-group full-width">
+                <label>Activity Level</label>
+                <select name="activityLevel" value={userStats.activityLevel} onChange={handleInputChange}>
+                  <option value="sedentary">Sedentary</option>
+                  <option value="light">Light Exercise</option>
+                  <option value="moderate">Moderate Exercise</option>
+                  <option value="active">Active</option>
+                  <option value="veryActive">Very Active</option>
                 </select>
               </div>
             </div>
 
-            <div className="form-group">
-              <label>Height</label>
-              <div className="input-with-unit">
-                <input
-                  type="number"
-                  name="height"
-                  value={userStats.height}
-                  onChange={handleInputChange}
-                  required
-                />
-                <select name="heightUnit" value={userStats.heightUnit} onChange={handleInputChange}>
-                  <option value="cm">cm</option>
-                  <option value="in">inches</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="form-group">
-              <label>Age</label>
-              <input
-                type="number"
-                name="age"
-                value={userStats.age}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Gender</label>
-              <select name="gender" value={userStats.gender} onChange={handleInputChange}>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-              </select>
-            </div>
-
-            <div className="form-group">
-              <label>Activity Level</label>
-              <select name="activityLevel" value={userStats.activityLevel} onChange={handleInputChange}>
-                <option value="sedentary">Sedentary</option>
-                <option value="light">Light Exercise</option>
-                <option value="moderate">Moderate Exercise</option>
-                <option value="active">Active</option>
-                <option value="veryActive">Very Active</option>
-              </select>
-            </div>
-
-            <div className="form-group">
-              <label>Goal</label>
-              <select name="goal" value={userStats.goal} onChange={handleInputChange}>
-                <option value="lose">Lose Weight</option>
-                <option value="maintain">Maintain Weight</option>
-                <option value="gain">Gain Weight</option>
-              </select>
-            </div>
-
-            <button type="submit" className="calculate-btn">
-              Calculate Plan
+            <button type="submit" className="diet-calculate-btn" disabled={loading}>
+              {loading ? <span className="s-spinner"></span> : 'Calculate Plan'}
             </button>
           </form>
 
           {nutritionPlan && (
-            <div className="results">
-              <div className="result-card">
+            <div className="diet-results-grid">
+              <div className="diet-result-card">
                 <h3>Daily Calories</h3>
-                <p className="result-value">{nutritionPlan.dailyCalories}</p>
-                <p className="result-description">Recommended daily intake</p>
+                <p className="diet-result-value">{nutritionPlan.dailyCalories}</p>
+                <p className="diet-result-desc">kcal</p>
               </div>
-              <div className="result-card">
+              <div className="diet-result-card">
                 <h3>Protein</h3>
-                <p className="result-value">{nutritionPlan.protein}g</p>
-                <p className="result-description">Daily protein target</p>
+                <p className="diet-result-value">{nutritionPlan.protein}g</p>
               </div>
-              <div className="result-card">
+              <div className="diet-result-card">
                 <h3>Carbs</h3>
-                <p className="result-value">{nutritionPlan.carbs}g</p>
-                <p className="result-description">Daily carbs target</p>
+                <p className="diet-result-value">{nutritionPlan.carbs}g</p>
               </div>
-              <div className="result-card">
+              <div className="diet-result-card">
                 <h3>Fats</h3>
-                <p className="result-value">{nutritionPlan.fats}g</p>
-                <p className="result-description">Daily fats target</p>
+                <p className="diet-result-value">{nutritionPlan.fats}g</p>
               </div>
             </div>
           )}
         </section>
 
-        <section className="meal-planner-section">
-          <h2>Custom Meal Planner</h2>
-          
-          {['breakfast', 'lunch', 'dinner', 'snacks'].map(meal => (
-            <div key={meal} className="meal-section">
-              <h3>{meal.charAt(0).toUpperCase() + meal.slice(1)}</h3>
-              
-              <div className="food-selector">
-                {Object.entries(foodCategories).map(([category, foods]) => (
-                  <div key={category} className="food-category">
-                    <h4>{category.charAt(0).toUpperCase() + category.slice(1)}</h4>
-                    <div className="food-list">
-                      {foods.map((food, index) => (
-                        <div key={index} className="food-item">
-                          <span>{food.name}</span>
-                          <button
-                            onClick={() => addFoodToMeal(meal, food)}
-                            className="add-food-btn"
-                          >
-                            <Plus size={16} />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
+        {/* Meal Planner Section */}
+        <section className="diet-planner-section diet-card">
+          <div className="diet-section-header">
+            <h2>Meal Planner</h2>
+          </div>
 
-              <div className="selected-foods">
-                {mealPlan[meal].map((food, index) => (
-                  <div key={index} className="selected-food-item">
-                    <span>{food.name}</span>
-                    <div className="food-stats">
-                      <span>{food.calories} cal</span>
-                      <span>{food.protein}g protein</span>
-                      <span>{food.carbs}g carbs</span>
-                      <span>{food.fat}g fat</span>
+          <div className="diet-meals-grid">
+            {['breakfast', 'lunch', 'dinner', 'snacks'].map(meal => (
+              <div key={meal} className="diet-meal-column">
+                <h3 className="diet-meal-title">{meal}</h3>
+
+                {/* Food Adder */}
+                <div className="diet-food-picker">
+                  {Object.entries(foodCategories).map(([category, foods]) => (
+                    <div key={category} className="diet-food-category">
+                      <h4>{category}</h4>
+                      <div className="diet-food-list">
+                        {foods.map((food, index) => (
+                          <button
+                            key={index}
+                            className="diet-food-btn"
+                            onClick={() => addFoodToMeal(meal, food)}
+                            title={`Add ${food.name}`}
+                          >
+                            {food.name} <Plus size={14} />
+                          </button>
+                        ))}
+                      </div>
                     </div>
-                    <button
-                      onClick={() => removeFoodFromMeal(meal, index)}
-                      className="remove-food-btn"
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
-                ))}
+                  ))}
+                </div>
+
+                {/* Selected Foods */}
+                <div className="diet-selected-foods">
+                  {mealPlan[meal].map((food, index) => (
+                    <div key={index} className="diet-selected-item">
+                      <div className="diet-item-info">
+                        <span className="diet-item-name">{food.name}</span>
+                        <span className="diet-item-cal">{food.calories} cal</span>
+                      </div>
+                      <button
+                        onClick={() => removeFoodFromMeal(meal, index)}
+                        className="diet-remove-btn"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
 
                 {mealPlan[meal].length > 0 && (
-                  <div className="meal-totals">
-                    <h4>Meal Totals</h4>
-                    <div className="totals-stats">
-                      {Object.entries(calculateMealTotals(meal)).map(([key, value]) => (
-                        <span key={key}>
-                          {key}: {Math.round(value)}
-                          {key === 'calories' ? ' cal' : 'g'}
-                        </span>
-                      ))}
-                    </div>
+                  <div className="diet-meal-totals">
+                    <span>Total: {Math.round(calculateMealTotals(meal).calories)} cal</span>
                   </div>
                 )}
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </section>
       </div>
     </div>

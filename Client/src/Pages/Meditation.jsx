@@ -14,21 +14,29 @@ const Meditation = () => {
   const outlineLength = 2 * Math.PI * 216.5;
 
   useEffect(() => {
-    outline.current.style.strokeDashoffset = outlineLength;
-    outline.current.style.strokeDasharray = outlineLength;
-    timeDisplay.current.textContent = `${Math.floor(fakeDuration / 60)}:${Math.floor(fakeDuration % 60)}`;
-  }, [fakeDuration, outlineLength]);
+    if (outline.current) {
+      outline.current.style.strokeDashoffset = outlineLength;
+      outline.current.style.strokeDasharray = outlineLength;
+    }
+  }, [outlineLength]); // Run once on mount to set initial strokes
+
+  useEffect(() => {
+    if (timeDisplay.current) {
+      const minutes = Math.floor(fakeDuration / 60);
+      const seconds = Math.floor(fakeDuration % 60);
+      timeDisplay.current.textContent = `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`; // Padded seconds
+    }
+  }, [fakeDuration]);
+
 
   const checkPlaying = () => {
     if (song.current.paused) {
       song.current.play();
       video.current.play();
-      playButton.current.src = '../svg/pause.svg';
       setIsPlaying(true);
     } else {
       song.current.pause();
       video.current.pause();
-      playButton.current.src = '../svg/play.svg';
       setIsPlaying(false);
     }
   };
@@ -40,7 +48,8 @@ const Meditation = () => {
 
   const handleTimeSelect = (time) => {
     setFakeDuration(time);
-    timeDisplay.current.textContent = `${Math.floor(time / 60)}:${Math.floor(time % 60)}`;
+    song.current.currentTime = 0; // Reset song progress when changing time
+    // Visual update happens in useEffect
   };
 
   const handleSoundChange = async (sound, videoSrc) => {
@@ -62,53 +71,79 @@ const Meditation = () => {
     const elapsed = fakeDuration - currentTime;
     const seconds = Math.floor(elapsed % 60);
     const minutes = Math.floor(elapsed / 60);
-    timeDisplay.current.textContent = `${minutes}:${seconds}`;
+
+    if (timeDisplay.current) {
+      timeDisplay.current.textContent = `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+    }
 
     const progress = outlineLength - (currentTime / fakeDuration) * outlineLength;
-    outline.current.style.strokeDashoffset = progress;
+    if (outline.current) {
+      outline.current.style.strokeDashoffset = progress;
+    }
 
     if (currentTime >= fakeDuration) {
       song.current.pause();
       song.current.currentTime = 0;
-      playButton.current.src = '../svg/play.svg';
       video.current.pause();
       setIsPlaying(false);
     }
   };
 
   return (
-    <div className="app">
-      <nav className="meditation-nav">
-        <Link to="/home" className="back-button">← Back to Home</Link>
-        <h1 className='session-head'>Meditation Session</h1>
+    <div className="meditation-root-container">
+      <nav className="meditation-navbar">
+        <Link to="/home" className="meditation-back-btn">← Home</Link>
+        <h1 className='meditation-title'>Meditation Session</h1>
       </nav>
-      <div className="vid-container">
-        <video ref={video} loop>
+
+      {/* Video Background */}
+      <div className="meditation-vid-container">
+        <video ref={video} loop muted className="meditation-bg-video">
           <source src="../video/rain.mp4" type="video/mp4" />
         </video>
+        <div className="meditation-video-overlay"></div>
       </div>
-      <div className="time-select">
-        <button onClick={() => handleTimeSelect(120)}>2 Minutes</button>
-        <button onClick={() => handleTimeSelect(300)} className="medium-mins">5 Minutes</button>
-        <button onClick={() => handleTimeSelect(600)} className="long-mins">10 Minutes</button>
-      </div>
-      <div className="player-container">
-        <audio ref={song} onTimeUpdate={handleTimeUpdate}>
-          <source src="../sounds/rain.mp3" />
-        </audio>
-        <img ref={playButton} src="../svg/play.svg" className="play" onClick={checkPlaying} alt="play button" />
-        <svg className="track-outline" width="453" height="453" viewBox="0 0 453 453" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="226.5" cy="226.5" r="216.5" stroke="white" strokeWidth="20" />
-        </svg>
-        <svg ref={outline} className="moving-outline" width="453" height="453" viewBox="0 0 453 453" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="226.5" cy="226.5" r="216.5" stroke="#018EBA" strokeWidth="20" />
-        </svg>
-        <img src="../svg/replay.svg" className="replay" onClick={restartSong} alt="replay button" />
-        <h3 ref={timeDisplay} className="time-display">0:00</h3>
-      </div>
-      <div className="sound-picker">
-        <button onClick={() => handleSoundChange('../sounds/rain.mp3', '../video/rain.mp4')}><img src="../svg/rain.svg" alt="rain" /></button>
-        <button onClick={() => handleSoundChange('../sounds/beach.mp3', '../video/beach.mp4')}><img src="../svg/beach.svg" alt="beach" /></button>
+
+      <div className="meditation-controls-wrapper">
+        <div className="meditation-time-picker">
+          <button onClick={() => handleTimeSelect(120)} className="meditation-time-btn">2 Mins</button>
+          <button onClick={() => handleTimeSelect(300)} className="meditation-time-btn">5 Mins</button>
+          <button onClick={() => handleTimeSelect(600)} className="meditation-time-btn">10 Mins</button>
+        </div>
+
+        <div className="meditation-player-container">
+          <audio ref={song} onTimeUpdate={handleTimeUpdate}>
+            <source src="../sounds/rain.mp3" />
+          </audio>
+
+          <div className="meditation-svg-wrapper">
+            {/* Using standard sizing controlled by CSS logic mostly, but keeping viewBox for circle calc */}
+            <svg className="meditation-track-outline" width="300" height="300" viewBox="0 0 453 453" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="226.5" cy="226.5" r="216.5" strokeWidth="20" />
+            </svg>
+            <svg ref={outline} className="meditation-moving-outline" width="300" height="300" viewBox="0 0 453 453" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="226.5" cy="226.5" r="216.5" strokeWidth="20" strokeLinecap="round" />
+            </svg>
+          </div>
+
+          <div className="meditation-center-actions">
+            <button onClick={checkPlaying} className="meditation-play-toggle">
+              <img ref={playButton} src={isPlaying ? "../svg/pause.svg" : "../svg/play.svg"} className="meditation-play-icon" alt="play/pause" />
+            </button>
+            <h3 ref={timeDisplay} className="meditation-timer-text">10:00</h3>
+          </div>
+        </div>
+
+        <div className="meditation-sound-picker">
+          <button className="meditation-sound-btn" onClick={() => handleSoundChange('../sounds/rain.mp3', '../video/rain.mp4')}>
+            <img src="../svg/rain.svg" alt="rain" />
+            <span>Rain</span>
+          </button>
+          <button className="meditation-sound-btn" onClick={() => handleSoundChange('../sounds/beach.mp3', '../video/beach.mp4')}>
+            <img src="../svg/beach.svg" alt="beach" />
+            <span>Beach</span>
+          </button>
+        </div>
       </div>
     </div>
   );

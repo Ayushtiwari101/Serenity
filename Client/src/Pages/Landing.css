@@ -1,189 +1,152 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  /* Navigation styles */
-  .navbarL {
-    display: flex;
-    height: 100px;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 2rem;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    z-index: 100;
-    background-color: rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(5px);
-  }
-  
-  /* Background image styling */
-  #bg-img {
-    width: 100%;
-    height: 100vh;
-    object-fit: cover;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: -1;
-    filter: brightness(0.8);
-  }
-  
-  /* Title styling */
-  .titleL {
-    font-family: 'Bokor', serif;
-    color: white;
-    font-size: 2.8rem;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    letter-spacing: 1px;
-  }
-  
-  /* Button styling */
-  .signupbtnL {
-    background-color: rgba(255, 255, 255, 0.9);
-    height: 50px;
-    width: 150px;
-    border-radius: 8px;
-    border: none;
-    text-align: center;
-    font-weight: bold;
-    font-size: 1.2rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin-top: 2rem;
-    position: absolute;
-    transform: translateX(-50%);
-    margin-top: 23vh;
-  }
-  
-  .signupbtnL:hover {
-    background-color: white;
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-  }
-  
-  .loginbtnL {
-    background-color: rgba(255, 255, 255, 0.9);
-    height: 40px;
-    width: 120px;
-    border-radius: 8px;
-    border: none;
-    text-align: center;
-    font-weight: bold;
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  .loginbtnL:hover {
-    background-color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-  }
-  
-  /* Content container */
-  #typed-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: 3rem;
-    color: rgb(6, 6, 6);
-    position: absolute;
-    margin-top: 5vh;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(5px);
-    padding: 2rem;
-    min-height: 300px;
-    height: 60vh;
-    width: 600px;
-    max-width: 90vw;
-    text-align: center;
-    border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-    margin-left: .5vw;
-  }
-  
- 
-  
-  .heading {
-    color: rgb(8, 8, 8);
-    font-weight: 700;
-    font-size: 2.5rem;
-  }
-  @keyframes floatMessage {
-    0% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-    100% { transform: translateY(0); }
-  }
-  
-  .message1 {
-    font-size: 1.2rem;
-    position: absolute;
-    margin-top: 20vh;
-    color: #333;
-    animation: floatMessage 3s infinite ease-in-out;
-  }
-  
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-    .title {
-      font-size: 2rem;
-    }
-    
-    #typed-container {
-      font-size: 2rem;
-      width: 90%;
-      padding: 1.5rem;
-    }
-    
-    .signupbtnL {
-      width: 120px;
-      height: 45px;
-      font-size: 1rem;
-    }
-    
-    .loginbtnL {
-      width: 100px;
-      height: 35px;
-      font-size: 0.9rem;
-    }
-    
-    .heading {
-      font-size: 2rem;
-    }
-    
-    .message1 {
-      font-size: 1rem;
-    }
-  }
-  
-  @media (max-width: 480px) {
-    .navbarL {
-      height: 80px;
-      padding: 0 1rem;
-    }
-    
-    .title {
-      font-size: 1.5rem;
-    }
-    
-    #typed-container {
-      font-size: 1.5rem;
-      padding: 1rem;
-      min-height: 250px;
-    }
-    
-    .heading {
-      font-size: 1.5rem;
-    }
-  }
-          
+/* Landing Page - Context: Sanctuary */
+
+.landing-root-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: url('/soothing-bg.png') center center / cover no-repeat fixed;
+  position: relative;
+}
+
+/* Soft overlay for text readability */
+.landing-root-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg,
+      rgba(255, 255, 255, 0.55) 0%,
+      rgba(255, 255, 255, 0.45) 50%,
+      rgba(255, 255, 255, 0.6) 100%);
+  z-index: 0;
+}
+
+/* Ensure content is above overlay */
+.landing-navbar,
+.landing-hero-section {
+  position: relative;
+  z-index: 1;
+}
+
+.landing-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 3rem;
+  width: 100%;
+  max-width: var(--s-container);
+  margin: 0 auto;
+}
+
+.landing-logo {
+  font-family: var(--s-font-heading);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--s-gray-900);
+}
+
+.landing-nav-links {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.landing-nav-link {
+  color: var(--s-gray-700);
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.landing-nav-btn {
+  background: var(--s-gray-900);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: .2s;
+}
+
+.landing-nav-btn:hover {
+  background: #000;
+}
+
+/* Hero */
+.landing-hero-section {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  text-align: center;
+}
+
+.landing-hero-content {
+  max-width: 800px;
+  /* Add a subtle glass backing to frame the text against the open gradient */
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(5px);
+  padding: 3rem;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+.landing-hero-title {
+  font-size: 4.5rem;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+  color: var(--s-gray-900);
+  letter-spacing: -1px;
+}
+
+.landing-highlight-text {
+  color: var(--s-primary);
+  /* Sage Green Highlight */
+  font-style: italic;
+}
+
+.landing-hero-subtext {
+  font-size: 1.35rem;
+  color: var(--s-gray-700);
+  margin-bottom: 2.5rem;
+  line-height: 1.6;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.landing-cta-group {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+}
+
+.landing-btn-primary {
+  background: var(--s-primary);
+  color: white;
+  padding: 14px 32px;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(95, 141, 119, 0.3);
+  transition: all 0.2s;
+}
+
+.landing-btn-primary:hover {
+  transform: translateY(-2px);
+  background: var(--s-primary-dark);
+}
+
+.landing-btn-secondary {
+  background: white;
+  color: var(--s-gray-900);
+  border: 1px solid var(--s-gray-200);
+  padding: 14px 32px;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.landing-btn-secondary:hover {
+  border-color: var(--s-gray-900);
+}
