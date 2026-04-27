@@ -23,15 +23,15 @@
 
 @layer components {
   .glass-card {
-    @apply bg-white/40 backdrop-blur-xl border border-white/40 rounded-3xl shadow-glass;
+    @apply bg-white/30 backdrop-blur-3xl border border-white/40 rounded-[40px] shadow-[0_20px_50px_rgba(0,0,0,0.05)];
   }
 
   .btn-primary {
-    @apply px-8 py-3 bg-primary text-white font-semibold rounded-full shadow-lg hover:bg-primary-light hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center gap-2;
+    @apply px-10 py-4 bg-primary text-white font-bold rounded-[20px] shadow-[0_15px_35px_-5px_rgba(92,141,137,0.5)] hover:shadow-[0_20px_45px_-5px_rgba(92,141,137,0.6)] hover:-translate-y-1.5 active:scale-95 transition-all duration-500 flex items-center justify-center gap-3 tracking-wide;
   }
 
   .btn-secondary {
-    @apply px-8 py-3 bg-white/60 text-primary font-bold rounded-full border border-primary/10 hover:bg-white/90 hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center gap-2;
+    @apply px-10 py-4 bg-white/20 text-primary font-bold rounded-[20px] border border-white/50 backdrop-blur-2xl hover:bg-white/40 hover:-translate-y-1.5 active:scale-95 transition-all duration-500 flex items-center justify-center gap-3 shadow-sm;
   }
 
   .section-container {
