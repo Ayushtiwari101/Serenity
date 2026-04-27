@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Calculator, ChevronDown, Plus, Trash2 } from 'lucide-react';
-import axios from 'axios';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Calculator, Plus, Trash2, Soup, Leaf, Flame, Activity, ChevronRight, Sparkles } from 'lucide-react';
 import toast from 'react-hot-toast';
-import './DietPlan.css';
-
-const API_URL = 'http://localhost:5000'; // Update with your backend URL
+import Navbar from '../Components/Navbar';
+import Footer from '../Components/Footer';
+import AnimatedCard from '../Components/AnimatedCard';
 
 const foodCategories = {
   protein: [
@@ -40,64 +39,38 @@ const foodCategories = {
 
 const DietPlan = () => {
   const [userStats, setUserStats] = useState({
-    weight: '',
-    height: '',
-    age: '',
-    gender: 'male',
-    activityLevel: 'sedentary',
-    goal: 'maintain',
-    unit: 'kg',
-    heightUnit: 'cm'
+    weight: '', height: '', age: '', gender: 'male',
+    activityLevel: 'sedentary', goal: 'maintain', unit: 'kg', heightUnit: 'cm'
   });
 
   const [nutritionPlan, setNutritionPlan] = useState(null);
   const [loading, setLoading] = useState(false);
   const [mealPlan, setMealPlan] = useState({
-    breakfast: [],
-    lunch: [],
-    dinner: [],
-    snacks: [],
+    breakfast: [], lunch: [], dinner: [], snacks: [],
   });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setUserStats(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setUserStats(prev => ({ ...prev, [name]: value }));
   };
 
   const handleCalculate = async (e) => {
     e.preventDefault();
-    setLoading(true); // Start Loading
-
-    // Simulate AI Processing Time (Simulates complex calculation)
+    setLoading(true);
     setTimeout(() => {
-      const calories = 2000; // Placeholder logic
-      setNutritionPlan({
-        dailyCalories: calories,
-        protein: 150,
-        carbs: 200,
-        fats: 65
-      });
-      setLoading(false); // Stop Loading
+      setNutritionPlan({ dailyCalories: 2150, protein: 160, carbs: 220, fats: 70 });
+      setLoading(false);
       toast.success('Custom Plan Generated!', { icon: '🥗' });
-    }, 1500);
+    }, 1200);
   };
 
   const addFoodToMeal = (meal, food) => {
-    setMealPlan(prev => ({
-      ...prev,
-      [meal]: [...prev[meal], food]
-    }));
+    setMealPlan(prev => ({ ...prev, [meal]: [...prev[meal], food] }));
     toast.success(`Added ${food.name}`);
   };
 
   const removeFoodFromMeal = (meal, index) => {
-    setMealPlan(prev => ({
-      ...prev,
-      [meal]: prev[meal].filter((_, i) => i !== index)
-    }));
+    setMealPlan(prev => ({ ...prev, [meal]: prev[meal].filter((_, i) => i !== index) }));
   };
 
   const calculateMealTotals = (meal) => {
@@ -110,180 +83,157 @@ const DietPlan = () => {
   };
 
   return (
-    <div className="diet-root-container animate-enter">
-      <nav className="diet-navbar">
-        <div className="diet-nav-content">
-          <Link to="/home" className="diet-back-link">← Back</Link>
-          <h1 className="diet-brand-title">Diet Planner</h1>
-        </div>
-      </nav>
+    <div className="min-h-screen flex flex-col">
+      <Navbar />
 
-      <div className="diet-main-content container">
-        {/* Calculator Section */}
-        <section className="diet-calculator-section diet-card">
-          <div className="diet-section-header">
-            <Calculator className="diet-icon" />
-            <h2>Nutrition Calculator</h2>
-          </div>
+      <main className="flex-grow pt-32 px-6 max-w-7xl mx-auto w-full mb-12">
+        <header className="mb-12">
+            <motion.div 
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 text-primary rounded-lg text-xs font-bold uppercase tracking-widest mb-4"
+            >
+                <Leaf size={14} /> Nutritionist AI
+            </motion.div>
+            <h1 className="text-5xl font-poppins font-medium text-zinc-900 tracking-tight">
+                Fuel Your <span className="font-bold text-primary italic">Ambition</span>
+            </h1>
+        </header>
 
-          <form onSubmit={handleCalculate} className="diet-calculator-form">
-            <div className="diet-form-grid">
-              <div className="diet-form-group">
-                <label>Weight</label>
-                <div className="diet-input-wrapper">
-                  <input
-                    type="number"
-                    name="weight"
-                    value={userStats.weight}
-                    onChange={handleInputChange}
-                    required
-                    placeholder="0"
-                  />
-                  <select name="unit" value={userStats.unit} onChange={handleInputChange}>
-                    <option value="kg">kg</option>
-                    <option value="lbs">lbs</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="diet-form-group">
-                <label>Height</label>
-                <div className="diet-input-wrapper">
-                  <input
-                    type="number"
-                    name="height"
-                    value={userStats.height}
-                    onChange={handleInputChange}
-                    required
-                    placeholder="0"
-                  />
-                  <select name="heightUnit" value={userStats.heightUnit} onChange={handleInputChange}>
-                    <option value="cm">cm</option>
-                    <option value="in">in</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="diet-form-group">
-                <label>Age</label>
-                <input
-                  type="number"
-                  name="age"
-                  value={userStats.age}
-                  onChange={handleInputChange}
-                  required
-                  placeholder="0"
-                />
-              </div>
-
-              <div className="diet-form-group">
-                <label>Gender</label>
-                <select name="gender" value={userStats.gender} onChange={handleInputChange}>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                </select>
-              </div>
-
-              <div className="diet-form-group full-width">
-                <label>Activity Level</label>
-                <select name="activityLevel" value={userStats.activityLevel} onChange={handleInputChange}>
-                  <option value="sedentary">Sedentary</option>
-                  <option value="light">Light Exercise</option>
-                  <option value="moderate">Moderate Exercise</option>
-                  <option value="active">Active</option>
-                  <option value="veryActive">Very Active</option>
-                </select>
-              </div>
-            </div>
-
-            <button type="submit" className="diet-calculate-btn" disabled={loading}>
-              {loading ? <span className="s-spinner"></span> : 'Calculate Plan'}
-            </button>
-          </form>
-
-          {nutritionPlan && (
-            <div className="diet-results-grid">
-              <div className="diet-result-card">
-                <h3>Daily Calories</h3>
-                <p className="diet-result-value">{nutritionPlan.dailyCalories}</p>
-                <p className="diet-result-desc">kcal</p>
-              </div>
-              <div className="diet-result-card">
-                <h3>Protein</h3>
-                <p className="diet-result-value">{nutritionPlan.protein}g</p>
-              </div>
-              <div className="diet-result-card">
-                <h3>Carbs</h3>
-                <p className="diet-result-value">{nutritionPlan.carbs}g</p>
-              </div>
-              <div className="diet-result-card">
-                <h3>Fats</h3>
-                <p className="diet-result-value">{nutritionPlan.fats}g</p>
-              </div>
-            </div>
-          )}
-        </section>
-
-        {/* Meal Planner Section */}
-        <section className="diet-planner-section diet-card">
-          <div className="diet-section-header">
-            <h2>Meal Planner</h2>
-          </div>
-
-          <div className="diet-meals-grid">
-            {['breakfast', 'lunch', 'dinner', 'snacks'].map(meal => (
-              <div key={meal} className="diet-meal-column">
-                <h3 className="diet-meal-title">{meal}</h3>
-
-                {/* Food Adder */}
-                <div className="diet-food-picker">
-                  {Object.entries(foodCategories).map(([category, foods]) => (
-                    <div key={category} className="diet-food-category">
-                      <h4>{category}</h4>
-                      <div className="diet-food-list">
-                        {foods.map((food, index) => (
-                          <button
-                            key={index}
-                            className="diet-food-btn"
-                            onClick={() => addFoodToMeal(meal, food)}
-                            title={`Add ${food.name}`}
-                          >
-                            {food.name} <Plus size={14} />
-                          </button>
-                        ))}
-                      </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+          {/* Calculator Section */}
+          <div className="lg:col-span-4">
+            <AnimatedCard className="p-8">
+              <h2 className="text-xl font-bold text-zinc-800 mb-8 flex items-center gap-3">
+                <Calculator className="text-primary" size={24} /> Metabolism
+              </h2>
+              <form onSubmit={handleCalculate} className="space-y-6">
+                <div className="grid grid-cols-2 gap-4">
+                    <div className="flex flex-col gap-2">
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Weight</label>
+                        <input 
+                            type="number" name="weight" value={userStats.weight} onChange={handleInputChange} required
+                            className="px-4 py-3 bg-zinc-50 border border-zinc-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-bold"
+                        />
                     </div>
-                  ))}
-                </div>
-
-                {/* Selected Foods */}
-                <div className="diet-selected-foods">
-                  {mealPlan[meal].map((food, index) => (
-                    <div key={index} className="diet-selected-item">
-                      <div className="diet-item-info">
-                        <span className="diet-item-name">{food.name}</span>
-                        <span className="diet-item-cal">{food.calories} cal</span>
-                      </div>
-                      <button
-                        onClick={() => removeFoodFromMeal(meal, index)}
-                        className="diet-remove-btn"
-                      >
-                        <Trash2 size={14} />
-                      </button>
+                    <div className="flex flex-col gap-2">
+                        <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Height</label>
+                        <input 
+                            type="number" name="height" value={userStats.height} onChange={handleInputChange} required
+                            className="px-4 py-3 bg-zinc-50 border border-zinc-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-bold"
+                        />
                     </div>
-                  ))}
+                </div>
+                
+                <div className="flex flex-col gap-2">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Activity Level</label>
+                    <select 
+                        name="activityLevel" value={userStats.activityLevel} onChange={handleInputChange}
+                        className="px-4 py-3 bg-zinc-50 border border-zinc-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-bold text-sm"
+                    >
+                        <option value="sedentary">Sedentary</option>
+                        <option value="light">Lightly Active</option>
+                        <option value="moderate">Moderately Active</option>
+                        <option value="active">Very Active</option>
+                    </select>
                 </div>
 
-                {mealPlan[meal].length > 0 && (
-                  <div className="diet-meal-totals">
-                    <span>Total: {Math.round(calculateMealTotals(meal).calories)} cal</span>
-                  </div>
+                <button type="submit" disabled={loading} className="btn-primary w-full py-4 text-lg">
+                    {loading ? "Analyzing..." : "Generate My Plan"}
+                </button>
+              </form>
+
+              <AnimatePresence>
+                {nutritionPlan && (
+                    <motion.div 
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        className="mt-10 pt-10 border-t border-zinc-100"
+                    >
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="p-4 bg-primary/5 rounded-2xl border border-primary/10">
+                                <div className="flex items-center gap-2 text-[10px] font-bold text-primary uppercase tracking-widest mb-1">
+                                    <Flame size={12} /> Energy
+                                </div>
+                                <div className="text-xl font-bold text-zinc-900">{nutritionPlan.dailyCalories} <span className="text-xs font-normal opacity-50">kcal</span></div>
+                            </div>
+                            <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-100">
+                                <div className="flex items-center gap-2 text-[10px] font-bold text-emerald-600 uppercase tracking-widest mb-1">
+                                    <Activity size={12} /> Protein
+                                </div>
+                                <div className="text-xl font-bold text-zinc-900">{nutritionPlan.protein} <span className="text-xs font-normal opacity-50">g</span></div>
+                            </div>
+                        </div>
+                    </motion.div>
                 )}
-              </div>
-            ))}
+              </AnimatePresence>
+            </AnimatedCard>
           </div>
-        </section>
-      </div>
+
+          {/* Meal Planner Section */}
+          <div className="lg:col-span-8 flex flex-col gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {['breakfast', 'lunch', 'dinner', 'snacks'].map((meal, i) => (
+                    <AnimatedCard key={meal} delay={i * 0.1} className="p-8 flex flex-col">
+                        <div className="flex justify-between items-center mb-6">
+                            <h3 className="text-lg font-bold text-zinc-800 capitalize tracking-tight flex items-center gap-2">
+                                <Soup size={20} className="text-primary" /> {meal}
+                            </h3>
+                            <div className="text-xs font-bold text-zinc-400 tracking-widest">
+                                {Math.round(calculateMealTotals(meal).calories)} KCAL
+                            </div>
+                        </div>
+
+                        {/* Food Search / Add (Simplified for UI) */}
+                        <div className="flex flex-wrap gap-2 mb-8">
+                            {Object.entries(foodCategories).slice(0,2).map(([cat, foods]) => (
+                                <div key={cat} className="flex flex-wrap gap-1">
+                                    {foods.slice(0, 2).map((food, idx) => (
+                                        <button 
+                                            key={idx} 
+                                            onClick={() => addFoodToMeal(meal, food)}
+                                            className="px-3 py-1 bg-zinc-50 border border-zinc-100 rounded-lg text-[10px] font-bold text-zinc-500 hover:border-primary/30 hover:text-primary transition-all flex items-center gap-1"
+                                        >
+                                            <Plus size={10} /> {food.name}
+                                        </button>
+                                    ))}
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Selected Items */}
+                        <div className="space-y-3 flex-grow">
+                            <AnimatePresence mode="popLayout">
+                                {mealPlan[meal].map((food, idx) => (
+                                    <motion.div 
+                                        key={idx}
+                                        initial={{ opacity: 0, x: -10 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        exit={{ opacity: 0, scale: 0.9 }}
+                                        className="flex justify-between items-center p-4 bg-zinc-50/50 rounded-xl border border-zinc-50 group hover:border-zinc-200 transition-all"
+                                    >
+                                        <div>
+                                            <div className="text-sm font-bold text-zinc-800">{food.name}</div>
+                                            <div className="text-[10px] text-zinc-400 font-medium uppercase tracking-widest">{food.calories} calories</div>
+                                        </div>
+                                        <button 
+                                            onClick={() => removeFoodFromMeal(meal, idx)}
+                                            className="w-8 h-8 rounded-lg flex items-center justify-center text-zinc-300 hover:bg-rose-50 hover:text-rose-500 transition-all"
+                                        >
+                                            <Trash2 size={14} />
+                                        </button>
+                                    </motion.div>
+                                ))}
+                            </AnimatePresence>
+                        </div>
+                    </AnimatedCard>
+                ))}
+            </div>
+          </div>
+        </div>
+      </main>
+
+
     </div>
   );
 };
