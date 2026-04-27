@@ -1,141 +1,62 @@
-/* =========================================
-   SERENITY DESIGN SYSTEM - v3.1 (Contextual)
-   ========================================= */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap');
-
-:root {
-  /* --- NEUTRAL SCALE --- */
-  --s-white: #ffffff;
-  --s-gray-50: #f8fafc;
-  --s-gray-100: #f1f5f9;
-  --s-gray-200: #e2e8f0;
-  --s-gray-700: #334155;
-  --s-gray-900: #0f172a;
-
-  /* --- BRAND COLORS --- */
-  --s-primary: #5F8D77;
-  --s-primary-dark: #4A6F5D;
-  --s-accent: #64748B;
-
-  /* --- CONTEXT GRADIENTS (The "Background" Context) --- */
-  /* Landing/Auth: Welcoming Warmth */
-  --bg-welcome: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
-
-  /* Home: Calm Morning Mist (Sage/Blue hint) */
-  --bg-home: radial-gradient(circle at top left, #F1F4F9, #F6F8F3, #ffffff);
-
-  /* Workout: Focused Energy (Cool Steel/Blue) */
-  --bg-workout: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%), radial-gradient(at top right, #eef2f3 0%, #8e9eab 100%);
-  /* Actually let's use a cleaner CSS gradient for "Gym" feel */
-  --bg-energy: linear-gradient(to top, #dfe9f3 0%, #ffffff 100%);
-
-  /* Diet: Organic Freshness (Warm Beige/Green) */
-  --bg-organic: linear-gradient(to top, #e6e9f0 0%, #eef1f5 100%);
-  /* Subtle organic */
-  --bg-fresh: radial-gradient(circle at 50% 10%, #FDFCF6 0%, #F3F6E6 100%);
-  /* Warm beige/green tint */
-
-  /* Games: Creative Flow (Soft Violet/Blue tint) */
-  --bg-play: radial-gradient(circle at 10% 10%, #F5F7FA 0%, #c3cfe2 100%);
-  --bg-creative: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
-  /* Keeping it subtle but different */
-
-  /* --- SHADOWS --- */
-  --s-shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-  --s-shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
-
-  /* --- TYPOGRAPHY --- */
-  --s-font-heading: 'Playfair Display', serif;
-  --s-font-body: 'Inter', sans-serif;
-
-  /* --- SPACING & LAYOUT --- */
-  --s-radius-md: 12px;
-  --s-container: 1200px;
-}
-
-/* Modern Reset */
 * {
-  box-sizing: border-box;
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
-body {
-  font-family: var(--s-font-body);
-  color: var(--s-gray-700);
-  background-color: var(--s-white);
-  /* Default fallback */
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-}
-
-h1,
-h2,
-h3,
-h4 {
-  font-family: var(--s-font-heading);
-  color: var(--s-gray-900);
-  line-height: 1.2;
-}
-
-a {
-  text-decoration: none;
-  color: inherit;
-  transition: color 0.2s;
-}
-
-button {
-  cursor: pointer;
-  border: none;
-  font-family: var(--s-font-body);
-}
-
-/* --- UTILITIES --- */
-.s-card {
-  background: var(--s-white);
-  border: 1px solid var(--s-gray-200);
-  border-radius: var(--s-radius-md);
-  box-shadow: var(--s-shadow-card);
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.s-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--s-shadow-hover);
-  border-color: var(--s-primary);
-}
-
-/* --- ANIMATIONS (Global Polish) --- */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 20px, 0);
+@layer base {
+  body {
+    @apply font-inter bg-[#F8FAF9] text-zinc-800 antialiased;
+    background: linear-gradient(135deg, #f0f7f6 0%, #f7f3ff 50%, #fffbf0 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
   }
 
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-poppins font-semibold tracking-tight;
   }
 }
 
-.animate-enter {
-  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
+@layer components {
+  .glass-card {
+    @apply bg-white/40 backdrop-blur-xl border border-white/40 rounded-3xl shadow-glass;
+  }
 
-/* Spinner for Loading States */
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
+  .btn-primary {
+    @apply px-8 py-3 bg-primary text-white font-semibold rounded-full shadow-lg hover:bg-primary-light hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center gap-2;
+  }
+
+  .btn-secondary {
+    @apply px-8 py-3 bg-white/60 text-primary font-bold rounded-full border border-primary/10 hover:bg-white/90 hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center gap-2;
+  }
+
+  .section-container {
+    @apply max-w-[1200px] mx-auto px-6 py-12;
   }
 }
 
-.s-spinner {
-  width: 20px;
-  height: 20px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top-color: white;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-  display: inline-block;
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-zinc-100;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-primary/20 rounded-full hover:bg-primary/40 transition-colors;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }

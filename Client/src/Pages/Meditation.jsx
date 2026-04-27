@@ -1,39 +1,35 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import './Meditation.css';
+import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Play, Pause, RotateCcw, CloudRain, Waves, ArrowLeft } from 'lucide-react';
 
 const Meditation = () => {
+  const navigate = useNavigate();
   const song = useRef(null);
   const video = useRef(null);
-  const playButton = useRef(null);
-  const outline = useRef(null);
-  const timeDisplay = useRef(null);
   const [fakeDuration, setFakeDuration] = useState(600);
+  const [timeRemaining, setTimeRemaining] = useState(600);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [currentSound, setCurrentSound] = useState('rain');
 
   const outlineLength = 2 * Math.PI * 216.5;
 
   useEffect(() => {
-    if (outline.current) {
-      outline.current.style.strokeDashoffset = outlineLength;
-      outline.current.style.strokeDasharray = outlineLength;
-    }
-  }, [outlineLength]); // Run once on mount to set initial strokes
-
-  useEffect(() => {
-    if (timeDisplay.current) {
-      const minutes = Math.floor(fakeDuration / 60);
-      const seconds = Math.floor(fakeDuration % 60);
-      timeDisplay.current.textContent = `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`; // Padded seconds
-    }
+    setTimeRemaining(fakeDuration);
   }, [fakeDuration]);
 
+  const togglePlay = () => {
+    if (!song.current || !video.current) return;
 
-  const checkPlaying = () => {
     if (song.current.paused) {
-      song.current.play();
-      video.current.play();
-      setIsPlaying(true);
+      song.current.play().then(() => {
+        video.current.play().catch(e => console.error("Video failed:", e));
+        setIsPlaying(true);
+      }).catch(error => {
+        console.error("Audio failed:", error);
+        video.current.play().catch(e => console.error("Video failed:", e));
+        setIsPlaying(true); 
+      });
     } else {
       song.current.pause();
       video.current.pause();
@@ -41,45 +37,41 @@ const Meditation = () => {
     }
   };
 
-  const restartSong = () => {
-    song.current.currentTime = 0;
-    console.log('Restarted song');
-  };
-
   const handleTimeSelect = (time) => {
     setFakeDuration(time);
-    song.current.currentTime = 0; // Reset song progress when changing time
-    // Visual update happens in useEffect
+    if (song.current) {
+        song.current.currentTime = 0;
+        if (isPlaying) {
+            song.current.play().catch(e => {});
+            video.current.play().catch(e => {});
+        }
+    }
   };
 
-  const handleSoundChange = async (sound, videoSrc) => {
-    const wasPlaying = !song.current.paused;
-    song.current.pause();
-    video.current.pause();
-    song.current.src = sound;
-    video.current.src = videoSrc;
-    await song.current.load();
-    await video.current.load();
-    if (wasPlaying) {
-      song.current.play();
-      video.current.play();
+  const handleSoundChange = async (soundType) => {
+    const wasPlaying = isPlaying;
+    setCurrentSound(soundType);
+    
+    const soundSrc = soundType === 'beach' ? './sounds/beach.mp3' : './sounds/rain.mp3';
+    const videoSrc = soundType === 'beach' ? './video/beach.mp4' : './video/rain.mp4';
+
+    if (song.current && video.current) {
+        song.current.src = soundSrc;
+        video.current.src = videoSrc;
+        song.current.load();
+        video.current.load();
+        if (wasPlaying) {
+          song.current.play().catch(e => {});
+          video.current.play().catch(e => {});
+        }
     }
   };
 
   const handleTimeUpdate = () => {
+    if (!song.current) return;
     const currentTime = song.current.currentTime;
     const elapsed = fakeDuration - currentTime;
-    const seconds = Math.floor(elapsed % 60);
-    const minutes = Math.floor(elapsed / 60);
-
-    if (timeDisplay.current) {
-      timeDisplay.current.textContent = `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
-    }
-
-    const progress = outlineLength - (currentTime / fakeDuration) * outlineLength;
-    if (outline.current) {
-      outline.current.style.strokeDashoffset = progress;
-    }
+    setTimeRemaining(Math.max(0, elapsed));
 
     if (currentTime >= fakeDuration) {
       song.current.pause();
@@ -89,62 +81,133 @@ const Meditation = () => {
     }
   };
 
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs < 10 ? '0' + secs : secs}`;
+  };
+
+  const progress = (1 - timeRemaining / fakeDuration) * outlineLength;
+
   return (
-    <div className="meditation-root-container">
-      <nav className="meditation-navbar">
-        <Link to="/home" className="meditation-back-btn">← Home</Link>
-        <h1 className='meditation-title'>Meditation Session</h1>
-      </nav>
+    <div className="relative h-screen bg-black overflow-hidden flex flex-col items-center justify-center">
+      {/* Background Video */}
+      <video 
+        ref={video} 
+        loop 
+        muted 
+        playsInline
+        src={currentSound === 'beach' ? './video/beach.mp4' : './video/rain.mp4'}
+        className="absolute inset-0 w-full h-full object-cover opacity-60"
+      />
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] pointer-events-none" />
 
-      {/* Video Background */}
-      <div className="meditation-vid-container">
-        <video ref={video} loop muted className="meditation-bg-video">
-          <source src="../video/rain.mp4" type="video/mp4" />
-        </video>
-        <div className="meditation-video-overlay"></div>
-      </div>
-
-      <div className="meditation-controls-wrapper">
-        <div className="meditation-time-picker">
-          <button onClick={() => handleTimeSelect(120)} className="meditation-time-btn">2 Mins</button>
-          <button onClick={() => handleTimeSelect(300)} className="meditation-time-btn">5 Mins</button>
-          <button onClick={() => handleTimeSelect(600)} className="meditation-time-btn">10 Mins</button>
+      {/* Distraction-free Back Button */}
+      <button 
+        onClick={() => navigate('/home')}
+        className="absolute top-8 left-8 z-50 flex items-center gap-2 text-white/50 hover:text-white transition-all group"
+      >
+        <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center group-hover:bg-white/20 transition-all border border-white/10">
+            <ArrowLeft size={20} />
         </div>
+        <span className="text-[10px] font-bold uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">Exit Session</span>
+      </button>
 
-        <div className="meditation-player-container">
-          <audio ref={song} onTimeUpdate={handleTimeUpdate}>
-            <source src="../sounds/rain.mp3" />
-          </audio>
-
-          <div className="meditation-svg-wrapper">
-            {/* Using standard sizing controlled by CSS logic mostly, but keeping viewBox for circle calc */}
-            <svg className="meditation-track-outline" width="300" height="300" viewBox="0 0 453 453" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="226.5" cy="226.5" r="216.5" strokeWidth="20" />
-            </svg>
-            <svg ref={outline} className="meditation-moving-outline" width="300" height="300" viewBox="0 0 453 453" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="226.5" cy="226.5" r="216.5" strokeWidth="20" strokeLinecap="round" />
-            </svg>
-          </div>
-
-          <div className="meditation-center-actions">
-            <button onClick={checkPlaying} className="meditation-play-toggle">
-              <img ref={playButton} src={isPlaying ? "../svg/pause.svg" : "../svg/play.svg"} className="meditation-play-icon" alt="play/pause" />
+      <main className="relative z-10 w-full max-w-2xl px-6 flex flex-col items-center justify-center gap-10 h-full">
+        {/* Time Selection */}
+        <div className="flex gap-4 p-2 bg-white/10 backdrop-blur-xl border border-white/20 rounded-full">
+          {[120, 300, 600].map(t => (
+            <button 
+              key={t}
+              onClick={() => handleTimeSelect(t)} 
+              className={`px-8 py-3 rounded-full text-sm font-bold tracking-widest uppercase transition-all duration-300 ${
+                fakeDuration === t 
+                ? 'bg-white text-primary shadow-xl' 
+                : 'text-white/60 hover:text-white hover:bg-white/5'
+              }`}
+            >
+              {t / 60} Min
             </button>
-            <h3 ref={timeDisplay} className="meditation-timer-text">10:00</h3>
+          ))}
+        </div>
+
+        {/* Timer Circle */}
+        <div className="relative w-80 h-80 flex items-center justify-center">
+          <svg className="absolute inset-0 w-full h-full -rotate-90 pointer-events-none" viewBox="0 0 453 453">
+            <circle cx="226.5" cy="226.5" r="216.5" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="12" />
+            <motion.circle 
+              cx="226.5" cy="226.5" r="216.5" 
+              fill="none" stroke="white" strokeWidth="12" 
+              strokeDasharray={outlineLength}
+              animate={{ strokeDashoffset: outlineLength - progress }}
+              transition={{ duration: 0.1, ease: "linear" }}
+              strokeLinecap="round"
+              className="drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]"
+            />
+          </svg>
+          
+          <div className="flex flex-col items-center gap-6 relative z-20">
+            <motion.button 
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={togglePlay}
+              className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-2xl text-primary cursor-pointer"
+            >
+              <AnimatePresence mode="wait">
+                {isPlaying ? (
+                  <motion.div key="pause" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                    <Pause size={32} fill="currentColor" />
+                  </motion.div>
+                ) : (
+                  <motion.div key="play" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                    <Play size={32} fill="currentColor" className="ml-1" />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.button>
+            <h2 className="text-7xl font-poppins font-light text-white tracking-tighter">
+              {formatTime(timeRemaining)}
+            </h2>
           </div>
         </div>
 
-        <div className="meditation-sound-picker">
-          <button className="meditation-sound-btn" onClick={() => handleSoundChange('../sounds/rain.mp3', '../video/rain.mp4')}>
-            <img src="../svg/rain.svg" alt="rain" />
-            <span>Rain</span>
+        {/* Reset Button */}
+        <button 
+          onClick={() => { if(song.current) song.current.currentTime = 0; }}
+          className="p-3 bg-white/5 rounded-full text-white/50 hover:text-white hover:bg-white/10 transition-all"
+          title="Reset Timer"
+        >
+          <RotateCcw size={24} />
+        </button>
+
+        <audio 
+            ref={song} 
+            onTimeUpdate={handleTimeUpdate}
+            src={currentSound === 'beach' ? './sounds/beach.mp3' : './sounds/rain.mp3'}
+        />
+
+        {/* Sound Selection */}
+        <div className="flex gap-10 p-5 bg-white/10 backdrop-blur-xl border border-white/20 rounded-full">
+          <button 
+            onClick={() => handleSoundChange('rain')}
+            className={`flex items-center gap-3 transition-all duration-300 ${
+              currentSound === 'rain' ? 'text-white scale-110' : 'text-white/40 hover:text-white/70'
+            }`}
+          >
+            <CloudRain size={20} />
+            <span className="font-bold text-xs tracking-widest uppercase">Rain</span>
           </button>
-          <button className="meditation-sound-btn" onClick={() => handleSoundChange('../sounds/beach.mp3', '../video/beach.mp4')}>
-            <img src="../svg/beach.svg" alt="beach" />
-            <span>Beach</span>
+          <button 
+            onClick={() => handleSoundChange('beach')}
+            className={`flex items-center gap-3 transition-all duration-300 ${
+              currentSound === 'beach' ? 'text-white scale-110' : 'text-white/40 hover:text-white/70'
+            }`}
+          >
+            <Waves size={20} />
+            <span className="font-bold text-xs tracking-widest uppercase">Beach</span>
           </button>
         </div>
-      </div>
+      </main>
     </div>
   );
 };

@@ -8,6 +8,7 @@ import Meditation from './Pages/Meditation'
 import Workout from './Pages/Workout'
 import Games from './Pages/Games'
 import DietPlan from './Pages/DietPlan'
+import Profile from './Pages/Profile'
 
 
 function App() {
@@ -24,7 +25,7 @@ function App() {
         <Route path='/games' element={<Games/>}/>
         <Route path='/workout' element={<Workout/>}/>
         <Route path='/diet' element={<DietPlan/>}/>
-        
+        <Route path='/profile' element={<Profile/>}/>
         
       </Routes>
       

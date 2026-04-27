@@ -1,4 +1,0 @@
-@import "./Login.css";
-/* Since I wrote the common styles in Login.css, importing them here ensures consistency. 
-   If import issues persist in the User's environment, the shared structure in Login.css handles strict class names anyway.
-*/
